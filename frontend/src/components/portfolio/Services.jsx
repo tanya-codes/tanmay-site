@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
 import { SERVICES } from "../../constants";
 
 export default function Services() {
@@ -91,7 +90,7 @@ function ServiceCard({ item, index, total }) {
               "linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)",
           }}
         />
-        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_auto] items-center gap-4 md:gap-8 p-6 md:p-10">
+        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] items-center gap-4 md:gap-8 p-6 md:p-10">
           <div
             className="font-editorial leading-none text-[#0C0C0C] tracking-tight shrink-0"
             style={{ fontSize: "clamp(2.4rem, 6vw, 5rem)", fontWeight: 900 }}
@@ -108,12 +107,6 @@ function ServiceCard({ item, index, total }) {
             <p className="mt-2 md:mt-3 text-sm md:text-base leading-relaxed text-[#0C0C0C]/65 max-w-2xl">
               {item.body}
             </p>
-          </div>
-          <div className="shrink-0 hidden md:flex items-center gap-2 text-xs uppercase tracking-[0.24em] text-[#0C0C0C]/50 group-hover:text-[#0C0C0C] transition-colors">
-            <span>Explore</span>
-            <span className="inline-flex w-9 h-9 items-center justify-center rounded-full border border-[#0C0C0C]/20 group-hover:border-[#0C0C0C]/50 transition-colors">
-              <ArrowUpRight size={14} />
-            </span>
           </div>
         </div>
       </motion.article>

@@ -1,11 +1,57 @@
-import React, { useRef, useState } from "react";
-import axios from "axios";
+import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Instagram, Mail, Phone, MapPin, Send, Check, X } from "lucide-react";
+import {
+  Instagram,
+  Mail,
+  Phone,
+  MapPin,
+  Camera,
+  Film,
+  TrendingUp,
+  MessageCircle,
+  ArrowUpRight,
+} from "lucide-react";
 import MagneticButton from "./MagneticButton";
 import FadeIn from "./FadeIn";
 import { WHATSAPP_URL, TEST_IDS } from "../../constants";
-import { API, trackEvent } from "../../lib/track";
+import { trackEvent } from "../../lib/track";
+
+// Pre-composed WhatsApp intents — each opens WhatsApp with a tailored first line
+const BASE = "https://wa.me/919266553033?text=";
+const PROMPTS = [
+  {
+    id: "brand-shoot",
+    icon: Camera,
+    label: "Brand shoot",
+    hint: "For a new campaign or product launch",
+    msg:
+      "Hi Tanmay — I'm interested in a brand shoot for my product / campaign. When can we get on a call?",
+  },
+  {
+    id: "content-system",
+    icon: Film,
+    label: "Monthly content",
+    hint: "Reels, shorts, and edits on retainer",
+    msg:
+      "Hi Tanmay — I'd like to explore a monthly content system for my brand. Can we discuss?",
+  },
+  {
+    id: "performance",
+    icon: TrendingUp,
+    label: "Performance ads",
+    hint: "Meta ads + creative + reporting",
+    msg:
+      "Hi Tanmay — I need help with Meta ads and performance creative. What does that look like with you?",
+  },
+  {
+    id: "just-hi",
+    icon: MessageCircle,
+    label: "Just say hi",
+    hint: "Not sure yet — let's chat",
+    msg:
+      "Hi Tanmay — I checked out your website and I'd like to chat about my brand.",
+  },
+];
 
 export default function Contact() {
   const ref = useRef(null);
@@ -15,38 +61,12 @@ export default function Contact() {
   });
   const headingY = useTransform(scrollYProgress, [0, 1], [60, -60]);
 
-  const [form, setForm] = useState({
-    name: "",
-    brand: "",
-    phone: "",
-    message: "",
-  });
-  const [status, setStatus] = useState("idle"); // idle | loading | success | error
-  const [errorMsg, setErrorMsg] = useState("");
-
-  const onChange = (k) => (e) =>
-    setForm((f) => ({ ...f, [k]: e.target.value }));
-
-  const submit = async (e) => {
-    e.preventDefault();
-    if (!form.name.trim() || !form.phone.trim() || !form.message.trim()) {
-      setStatus("error");
-      setErrorMsg("Name, phone and message are required.");
-      return;
-    }
-    setStatus("loading");
-    setErrorMsg("");
-    try {
-      await axios.post(`${API}/contact`, form);
-      setStatus("success");
-      trackEvent("contact_submit", { has_brand: !!form.brand });
-      setForm({ name: "", brand: "", phone: "", message: "" });
-    } catch (err) {
-      setStatus("error");
-      setErrorMsg(
-        err?.response?.data?.detail || "Something went wrong. Please try again."
-      );
-    }
+  const openWhatsApp = (prompt) => {
+    trackEvent("whatsapp_click", {
+      source: "contact_prompt",
+      prompt: prompt.id,
+    });
+    window.open(BASE + encodeURIComponent(prompt.msg), "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -70,13 +90,25 @@ export default function Contact() {
           className="hero-heading font-editorial tracking-tight leading-none text-center"
         >
           <span
-            style={{ fontSize: "clamp(3rem, 12vw, 9rem)", display: "block", fontWeight: 900, fontStyle: "italic" }}
+            style={{
+              fontSize: "clamp(3rem, 12vw, 9rem)",
+              display: "block",
+              fontWeight: 900,
+              fontStyle: "italic",
+            }}
           >
             Let&apos;s Talk
           </span>
         </motion.h2>
 
-        <FadeIn delay={0.15} className="mt-10 md:mt-14 flex justify-center">
+        <FadeIn delay={0.1}>
+          <p className="mt-6 md:mt-8 text-center max-w-xl mx-auto text-[#D7E2EA]/70 text-base md:text-lg leading-relaxed">
+            Pick a starting point below — you&apos;ll land straight in my
+            WhatsApp with the first line already written.
+          </p>
+        </FadeIn>
+
+        <FadeIn delay={0.2} className="mt-10 md:mt-14 flex justify-center">
           <MagneticButton
             href={WHATSAPP_URL}
             target="_blank"
@@ -85,149 +117,139 @@ export default function Contact() {
             data-testid={TEST_IDS.contactWhatsapp}
             onClick={() => trackEvent("whatsapp_click", { source: "contact" })}
           >
-            Message on WhatsApp <span aria-hidden>→</span>
+            Message on WhatsApp <ArrowUpRight size={16} />
           </MagneticButton>
         </FadeIn>
 
-        <div className="mt-16 md:mt-24 grid grid-cols-1 lg:grid-cols-5 gap-10 md:gap-16">
-          <FadeIn className="lg:col-span-2 space-y-6 text-[#D7E2EA]">
+        {/* Prompt tiles — the "form" replacement */}
+        <FadeIn delay={0.3}>
+          <div className="mt-14 md:mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 max-w-5xl mx-auto">
+            {PROMPTS.map((p, i) => (
+              <PromptTile
+                key={p.id}
+                prompt={p}
+                index={i}
+                onClick={() => openWhatsApp(p)}
+              />
+            ))}
+          </div>
+        </FadeIn>
+
+        {/* Info block */}
+        <FadeIn delay={0.4}>
+          <div className="mt-16 md:mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 max-w-5xl mx-auto">
             <InfoRow
-              icon={<Instagram size={18} />}
+              icon={<Instagram size={16} />}
               href="https://instagram.com/tanmayvisuals.in"
-            >
-              instagram.com/tanmayvisuals.in
-            </InfoRow>
-            <InfoRow icon={<Mail size={18} />} href="mailto:work.tanmay.in@gmail.com">
-              work.tanmay.in@gmail.com
-            </InfoRow>
-            <InfoRow icon={<Phone size={18} />} href="tel:+919266553033">
-              +91 9266553033
-            </InfoRow>
-            <InfoRow icon={<MapPin size={18} />}>
-              Based in Delhi NCR. Working with brands across India.
-            </InfoRow>
+              label="Instagram"
+              value="@tanmayvisuals.in"
+            />
+            <InfoRow
+              icon={<Mail size={16} />}
+              href="mailto:work.tanmay.in@gmail.com"
+              label="Email"
+              value="work.tanmay.in@gmail.com"
+            />
+            <InfoRow
+              icon={<Phone size={16} />}
+              href="tel:+919266553033"
+              label="Phone"
+              value="+91 92665 53033"
+            />
+            <InfoRow
+              icon={<MapPin size={16} />}
+              label="Based in"
+              value="Delhi NCR · India"
+            />
+          </div>
+        </FadeIn>
 
-            <p className="pt-6 text-sm text-[#D7E2EA]/60 max-w-md">
-              I work with 2–3 brands at a time. Strategy first. Shoot second.
-              Everything else follows.
-            </p>
-          </FadeIn>
-
-          <FadeIn delay={0.1} className="lg:col-span-3">
-            <form onSubmit={submit} className="space-y-5">
-              <Field
-                label="Your name"
-                required
-                testId={TEST_IDS.contactName}
-                value={form.name}
-                onChange={onChange("name")}
-              />
-              <Field
-                label="Brand or business (optional)"
-                testId={TEST_IDS.contactBrand}
-                value={form.brand}
-                onChange={onChange("brand")}
-              />
-              <Field
-                label="Phone / WhatsApp"
-                required
-                testId={TEST_IDS.contactPhone}
-                value={form.phone}
-                onChange={onChange("phone")}
-              />
-              <Field
-                label="What are you looking to build?"
-                textarea
-                required
-                testId={TEST_IDS.contactMessage}
-                value={form.message}
-                onChange={onChange("message")}
-              />
-
-              <div className="flex items-center gap-4 pt-2">
-                <button
-                  type="submit"
-                  disabled={status === "loading"}
-                  data-testid={TEST_IDS.contactSubmit}
-                  className="inline-flex items-center gap-2 rounded-full bg-[#F6FCFF] text-[#051A24] px-6 py-3 text-sm font-medium tracking-wide hover:bg-white transition-colors disabled:opacity-60"
-                >
-                  {status === "loading" ? (
-                    "Sending…"
-                  ) : (
-                    <>
-                      Send message <Send size={16} />
-                    </>
-                  )}
-                </button>
-
-                {status === "success" && (
-                  <span
-                    data-testid={TEST_IDS.contactSuccess}
-                    className="inline-flex items-center gap-2 text-emerald-400 text-sm"
-                  >
-                    <Check size={16} /> Sent — I&apos;ll be in touch soon.
-                  </span>
-                )}
-                {status === "error" && (
-                  <span
-                    data-testid={TEST_IDS.contactError}
-                    className="inline-flex items-center gap-2 text-red-400 text-sm"
-                  >
-                    <X size={16} /> {errorMsg}
-                  </span>
-                )}
-              </div>
-            </form>
-          </FadeIn>
-        </div>
+        <FadeIn delay={0.5}>
+          <p className="mt-14 md:mt-20 text-center text-sm md:text-base text-[#D7E2EA]/50 max-w-md mx-auto italic font-editorial-italic">
+            &ldquo;I work with 2–3 brands at a time. Strategy first. Shoot
+            second. Everything else follows.&rdquo;
+          </p>
+        </FadeIn>
       </div>
     </section>
   );
 }
 
-function InfoRow({ icon, href, children }) {
-  const inner = (
-    <span className="inline-flex items-center gap-3">
-      <span className="text-[#D7E2EA]/60">{icon}</span>
-      <span>{children}</span>
-    </span>
+function PromptTile({ prompt, index, onClick }) {
+  const Icon = prompt.icon;
+  return (
+    <motion.button
+      onClick={onClick}
+      whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.98 }}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{
+        duration: 0.6,
+        delay: 0.1 + index * 0.08,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      data-testid={`prompt-${prompt.id}`}
+      className="group relative rounded-3xl border border-[#D7E2EA]/12 bg-[rgba(215,226,234,0.03)] hover:bg-[rgba(215,226,234,0.06)] hover:border-[#D7E2EA]/25 p-5 md:p-6 text-left transition-all overflow-hidden"
+    >
+      {/* Gradient accent on hover */}
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-[2px] opacity-0 group-hover:opacity-100 transition-opacity"
+        style={{
+          background:
+            "linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%)",
+        }}
+      />
+      <div className="flex items-center justify-between mb-4 md:mb-6">
+        <span className="w-10 h-10 md:w-11 md:h-11 rounded-full bg-[#D7E2EA]/8 border border-[#D7E2EA]/15 flex items-center justify-center text-[#D7E2EA]">
+          <Icon size={17} />
+        </span>
+        <span className="w-8 h-8 rounded-full border border-[#D7E2EA]/15 flex items-center justify-center text-[#D7E2EA]/60 group-hover:text-[#D7E2EA] group-hover:border-[#D7E2EA]/40 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all">
+          <ArrowUpRight size={14} />
+        </span>
+      </div>
+      <div
+        className="font-editorial text-[#D7E2EA] leading-tight"
+        style={{ fontSize: "clamp(1.05rem, 1.6vw, 1.35rem)", fontWeight: 700 }}
+      >
+        {prompt.label}
+      </div>
+      <p className="mt-2 text-[13px] md:text-sm text-[#D7E2EA]/55 leading-relaxed">
+        {prompt.hint}
+      </p>
+    </motion.button>
   );
+}
+
+function InfoRow({ icon, href, label, value }) {
+  const inner = (
+    <div className="flex items-start gap-3 rounded-2xl border border-[#D7E2EA]/10 bg-[rgba(215,226,234,0.02)] hover:bg-[rgba(215,226,234,0.05)] p-4 md:p-5 transition-colors">
+      <span className="mt-0.5 w-9 h-9 rounded-full bg-[#D7E2EA]/8 flex items-center justify-center text-[#D7E2EA]/80 shrink-0">
+        {icon}
+      </span>
+      <div className="min-w-0">
+        <div className="text-[10px] font-mono-display uppercase tracking-[0.22em] text-[#D7E2EA]/45">
+          {label}
+        </div>
+        <div className="mt-1 text-sm md:text-[15px] text-[#D7E2EA] truncate">
+          {value}
+        </div>
+      </div>
+    </div>
+  );
+
   return href ? (
     <a
       href={href}
       target={href.startsWith("http") ? "_blank" : undefined}
       rel="noopener noreferrer"
-      className="block hover:text-white transition-colors"
+      className="block"
     >
       {inner}
     </a>
   ) : (
-    <div>{inner}</div>
-  );
-}
-
-function Field({ label, required, textarea, testId, value, onChange }) {
-  return (
-    <label className="block">
-      <span className="block text-[10px] uppercase tracking-[0.24em] text-[#D7E2EA]/60 mb-2 font-mono">
-        {label} {required && <span className="text-[#B600A8]">*</span>}
-      </span>
-      {textarea ? (
-        <textarea
-          data-testid={testId}
-          value={value}
-          onChange={onChange}
-          rows={5}
-          className="w-full rounded-xl border border-[rgba(215,226,234,0.2)] bg-transparent text-[#D7E2EA] px-4 py-3 outline-none focus:border-[rgba(215,226,234,0.5)] transition-colors resize-y"
-        />
-      ) : (
-        <input
-          data-testid={testId}
-          value={value}
-          onChange={onChange}
-          className="w-full rounded-xl border border-[rgba(215,226,234,0.2)] bg-transparent text-[#D7E2EA] px-4 py-3 outline-none focus:border-[rgba(215,226,234,0.5)] transition-colors"
-        />
-      )}
-    </label>
+    inner
   );
 }
