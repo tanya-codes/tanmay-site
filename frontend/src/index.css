@@ -109,7 +109,7 @@ body {
 
 @keyframes pulseSoft {
   0%, 100% { transform: translateX(-50%) scale(1); }
-  50% { transform: translateX(-50%) scale(1.02); }
+  50% { transform: translateX(-50%) scale(1.03); }
 }
 .animate-pulse-soft { animation: pulseSoft 4s ease-in-out infinite; }
 

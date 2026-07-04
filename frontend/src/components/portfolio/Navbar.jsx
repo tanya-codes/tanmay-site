@@ -101,6 +101,7 @@ export default function Navbar() {
                 <motion.a
                   key={l.href}
                   href={l.href}
+                  data-testid={`nav-${l.label.toLowerCase()}`}
                   onClick={() => setOpen(false)}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
