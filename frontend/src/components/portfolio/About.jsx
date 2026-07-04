@@ -47,7 +47,11 @@ export default function About() {
         </motion.h2>
 
         <div className="mt-10 md:mt-14 max-w-3xl mx-auto">
-          <AnimatedParagraph text={ABOUT_TEXT} sectionRef={sectionRef} />
+          <FadeIn delay={0.1}>
+            <p className="text-[#D7E2EA] text-lg md:text-2xl leading-relaxed md:leading-[1.55] tracking-tight text-left md:text-center">
+              {ABOUT_TEXT}
+            </p>
+          </FadeIn>
         </div>
 
         <AnimatePresence initial={false}>
@@ -95,31 +99,6 @@ export default function About() {
       </div>
     </section>
   );
-}
-
-function AnimatedParagraph({ text, sectionRef }) {
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start 0.8", "end 0.2"],
-  });
-  const chars = text.split("");
-
-  return (
-    <p className="text-[#D7E2EA] text-lg md:text-2xl leading-relaxed md:leading-[1.6] tracking-tight text-left md:text-center">
-      {chars.map((c, i) => (
-        <Char key={i} progress={scrollYProgress} index={i} total={chars.length}>
-          {c}
-        </Char>
-      ))}
-    </p>
-  );
-}
-
-function Char({ children, progress, index, total }) {
-  const start = index / total;
-  const end = (index + 4) / total;
-  const opacity = useTransform(progress, [start, end], [0.12, 1]);
-  return <motion.span style={{ opacity }}>{children}</motion.span>;
 }
 
 function CornerShape({ corner }) {

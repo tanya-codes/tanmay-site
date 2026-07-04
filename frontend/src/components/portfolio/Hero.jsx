@@ -8,12 +8,10 @@ import { WHATSAPP_URL, TEST_IDS } from "../../constants";
 import { trackEvent } from "../../lib/track";
 
 /**
- * Hero — cinematic layered composition with editorial serif display.
- * Composition inspired by Podium's studio hero + reference video:
- * · Central 3D portrait card that tilts with cursor
- * · Floating CSS-3D cinema camera object next to it
- * · Editorial "creative direction" heading with mixed serif+sans
- * · Floating info + stat pills for depth
+ * Hero — centered portrait with feathered blend into background.
+ * Massive "TANMAY" wordmark peeks behind the portrait.
+ * Left column: role stack (compact 1 line each).
+ * Right column: short about snippet + 3D camera + stats.
  */
 export default function Hero() {
   const cursor = useCursorPosition();
@@ -30,31 +28,26 @@ export default function Hero() {
   const srx = useSpring(rotX, { stiffness: 150, damping: 20 });
   const sry = useSpring(rotY, { stiffness: 150, damping: 20 });
 
-  const hX = useMotionValue(0);
-  const hY = useMotionValue(0);
-  const shX = useSpring(hX, { stiffness: 100, damping: 25 });
-  const shY = useSpring(hY, { stiffness: 100, damping: 25 });
+  // Background wordmark parallax
+  const bgWordX = useMotionValue(0);
+  const bgWordY = useMotionValue(0);
+  const sBgX = useSpring(bgWordX, { stiffness: 60, damping: 22 });
+  const sBgY = useSpring(bgWordY, { stiffness: 60, damping: 22 });
 
-  const cardAX = useMotionValue(0);
-  const cardAY = useMotionValue(0);
-  const scaX = useSpring(cardAX, { stiffness: 90, damping: 22 });
-  const scaY = useSpring(cardAY, { stiffness: 90, damping: 22 });
-
-  const cardBX = useMotionValue(0);
-  const cardBY = useMotionValue(0);
-  const scbX = useSpring(cardBX, { stiffness: 90, damping: 22 });
-  const scbY = useSpring(cardBY, { stiffness: 90, damping: 22 });
+  // Column parallax
+  const leftX = useMotionValue(0);
+  const rightX = useMotionValue(0);
+  const sLeftX = useSpring(leftX, { stiffness: 90, damping: 22 });
+  const sRightX = useSpring(rightX, { stiffness: 90, damping: 22 });
 
   useEffect(() => {
     rotX.set(cursor.y * -10);
     rotY.set(cursor.x * 10);
-    hX.set(cursor.x * -14);
-    hY.set(cursor.y * -8);
-    cardAX.set(cursor.x * 22);
-    cardAY.set(cursor.y * 14);
-    cardBX.set(cursor.x * -20);
-    cardBY.set(cursor.y * -12);
-  }, [cursor.x, cursor.y, rotX, rotY, hX, hY, cardAX, cardAY, cardBX, cardBY]);
+    bgWordX.set(cursor.x * 30);
+    bgWordY.set(cursor.y * 20);
+    leftX.set(cursor.x * -18);
+    rightX.set(cursor.x * 18);
+  }, [cursor.x, cursor.y, rotX, rotY, bgWordX, bgWordY, leftX, rightX]);
 
   const { scrollYProgress } = useScroll();
   const bgY = useTransform(scrollYProgress, [0, 0.3], ["0%", "10%"]);
@@ -68,7 +61,7 @@ export default function Hero() {
       className="relative w-full bg-[#0C0C0C] overflow-hidden pt-24 md:pt-28 pb-16 md:pb-24"
       style={{ minHeight: "100vh" }}
     >
-      {/* ---------- Background layers ---------- */}
+      {/* Background bloom + grid + grain */}
       <motion.div
         aria-hidden
         style={{ y: bgY }}
@@ -78,11 +71,11 @@ export default function Hero() {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(60% 55% at 50% 55%, rgba(182,0,168,0.18) 0%, rgba(118,33,176,0.10) 30%, transparent 65%), radial-gradient(45% 40% at 20% 20%, rgba(190,76,0,0.08) 0%, transparent 60%)",
+              "radial-gradient(55% 55% at 50% 50%, rgba(182,0,168,0.18) 0%, rgba(118,33,176,0.10) 30%, transparent 65%), radial-gradient(35% 30% at 15% 20%, rgba(190,76,0,0.08) 0%, transparent 60%)",
           }}
         />
         <div
-          className="absolute inset-0 opacity-[0.06]"
+          className="absolute inset-0 opacity-[0.05]"
           style={{
             backgroundImage:
               "linear-gradient(rgba(215,226,234,0.7) 1px, transparent 1px), linear-gradient(90deg, rgba(215,226,234,0.7) 1px, transparent 1px)",
@@ -102,7 +95,7 @@ export default function Hero() {
         />
       </motion.div>
 
-      {/* ---------- Top strip ---------- */}
+      {/* Top strip */}
       <div
         className={`relative z-[5] px-5 md:px-10 max-w-[1400px] mx-auto ${
           mounted ? "animate-fade-in-up" : "opacity-0"
@@ -116,265 +109,234 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* ---------- Composition ---------- */}
+      {/* ---------- Central composition ---------- */}
       <div
-        className="relative mt-6 md:mt-8 max-w-[1400px] mx-auto px-5 md:px-10"
+        className="relative mt-6 md:mt-10 max-w-[1400px] mx-auto px-5 md:px-10"
         style={{ perspective: 1400 }}
       >
-        <div className="relative mx-auto w-full flex items-center justify-center">
-          {/* Portrait card */}
+        {/* BACKDROP WORDMARK — "TANMAY" behind portrait */}
+        <motion.div
+          aria-hidden
+          style={{ x: sBgX, y: sBgY }}
+          initial={{ opacity: 0, scale: 1.08 }}
+          animate={mounted ? { opacity: 1, scale: 1 } : {}}
+          transition={{ duration: 1.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute inset-x-0 top-6 md:top-2 flex justify-center pointer-events-none"
+        >
+          <span
+            className="font-editorial select-none leading-none tracking-tight text-center whitespace-nowrap"
+            style={{
+              fontSize: "clamp(6rem, 22vw, 22rem)",
+              fontWeight: 900,
+              background:
+                "linear-gradient(180deg, rgba(215,226,234,0.22) 0%, rgba(215,226,234,0.06) 55%, transparent 100%)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              color: "transparent",
+              letterSpacing: "-0.04em",
+              WebkitTextStroke: "1px rgba(215,226,234,0.08)",
+            }}
+          >
+            TANMAY
+          </span>
+        </motion.div>
+
+        {/* Grid: left column · portrait · right column */}
+        <div className="relative grid grid-cols-1 lg:grid-cols-[1fr_minmax(320px,520px)_1fr] items-center gap-6 md:gap-8 lg:gap-4 mt-4 md:mt-8">
+          {/* LEFT — Role stack */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.92, y: 40 }}
+            style={{ x: sLeftX }}
+            className={`relative z-[6] order-2 lg:order-1 lg:pr-4 ${
+              mounted ? "animate-fade-in-up" : "opacity-0"
+            }`}
+          >
+            <div className="flex items-center gap-2 text-[10px] font-mono-display uppercase tracking-[0.28em] text-[#D7E2EA]/50 mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              I&apos;m Tanmay
+            </div>
+            <h1
+              className="hero-heading font-editorial leading-[0.9] tracking-tight"
+              data-testid="hero-heading"
+              style={{ fontSize: "clamp(1.85rem, 4vw, 3.1rem)" }}
+            >
+              <span className="font-editorial-italic block" style={{ fontWeight: 300 }}>
+                Creative
+              </span>
+              <span className="block" style={{ fontWeight: 900 }}>
+                Director,
+              </span>
+              <span className="font-editorial-italic block" style={{ fontWeight: 300 }}>
+                Video Editor
+              </span>
+              <span className="block" style={{ fontWeight: 900 }}>
+                &amp; Creator.
+              </span>
+            </h1>
+
+            <div className="mt-6 md:mt-8 flex flex-wrap items-center gap-3">
+              <MagneticButton
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="primary"
+                data-testid={TEST_IDS.heroCta}
+                onClick={() => trackEvent("whatsapp_click", { source: "hero" })}
+              >
+                Let&apos;s Talk <ArrowUpRight size={16} />
+              </MagneticButton>
+              <MagneticButton
+                as="a"
+                href="#work"
+                variant="outline"
+                data-testid={TEST_IDS.heroSecondaryCta}
+                onClick={() =>
+                  trackEvent("cta_click", { source: "hero_see_work" })
+                }
+              >
+                See the Work <span aria-hidden>↓</span>
+              </MagneticButton>
+            </div>
+          </motion.div>
+
+          {/* CENTER — Portrait (feathered blend, no card border) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94, y: 40 }}
             animate={mounted ? { opacity: 1, scale: 1, y: 0 } : {}}
-            transition={{ duration: 1.1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1.1, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
             style={{
               rotateX: srx,
               rotateY: sry,
               transformStyle: "preserve-3d",
+              perspective: 1200,
             }}
-            className="relative w-[86%] sm:w-[70%] md:w-[56%] lg:w-[44%] aspect-[4/5] rounded-[36px] overflow-hidden"
+            className="relative z-[7] order-1 lg:order-2 w-full max-w-[520px] mx-auto aspect-[4/5] animate-float-slow"
             data-testid={TEST_IDS.heroPortrait}
           >
+            {/* Gradient wash BEHIND image */}
             <div
-              className="absolute inset-0 rounded-[36px] overflow-hidden"
+              aria-hidden
+              className="absolute inset-0 rounded-[40px] pointer-events-none"
               style={{
-                border: "1px solid rgba(215,226,234,0.14)",
-                boxShadow:
-                  "0 40px 80px rgba(0,0,0,0.6), 0 0 80px rgba(182,0,168,0.15)",
+                background:
+                  "radial-gradient(55% 60% at 50% 55%, rgba(182,0,168,0.28) 0%, rgba(118,33,176,0.14) 45%, transparent 75%)",
+                filter: "blur(30px)",
+                transform: "translateZ(-40px)",
+              }}
+            />
+
+            {/* Feathered portrait — masked so edges blend into bg */}
+            <div
+              className="absolute inset-0"
+              style={{
+                WebkitMaskImage:
+                  "radial-gradient(ellipse 78% 82% at 50% 48%, #000 55%, transparent 100%)",
+                maskImage:
+                  "radial-gradient(ellipse 78% 82% at 50% 48%, #000 55%, transparent 100%)",
               }}
             >
-              <div
-                aria-hidden
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #0d212c 0%, #051A24 55%, #18011F 100%)",
-                }}
-              />
               <img
                 src="/tanmay-portrait.jpg"
                 alt="Tanmay — portrait"
-                className="relative w-full h-full object-cover"
+                className="w-full h-full object-cover"
                 draggable="false"
                 onError={(e) => {
                   e.currentTarget.style.display = "none";
                 }}
               />
+              {/* Cursor shine */}
               <div
                 aria-hidden
                 className="absolute inset-0 pointer-events-none"
                 style={{
-                  background: `radial-gradient(circle at ${shineX}% ${shineY}%, rgba(255,255,255,0.14) 0%, transparent 55%)`,
+                  background: `radial-gradient(circle at ${shineX}% ${shineY}%, rgba(255,255,255,0.16) 0%, transparent 55%)`,
                 }}
               />
-              <div
-                aria-hidden
-                className="absolute inset-x-0 bottom-0 h-1/2 pointer-events-none"
-                style={{
-                  background:
-                    "linear-gradient(to top, rgba(12,12,12,0.85) 5%, rgba(12,12,12,0.35) 45%, transparent 100%)",
-                }}
-              />
-              <div
-                aria-hidden
-                className="absolute inset-x-0 top-0 h-24 pointer-events-none"
-                style={{
-                  background:
-                    "linear-gradient(to bottom, rgba(12,12,12,0.4), transparent)",
-                }}
-              />
-              <FrameCorner position="top-left" />
-              <FrameCorner position="top-right" />
-              <FrameCorner position="bottom-left" />
-              <FrameCorner position="bottom-right" />
-              <div
-                className="absolute top-5 left-5 text-[10px] font-mono-display uppercase tracking-[0.28em] text-[#D7E2EA]/85"
-                style={{ transform: "translateZ(30px)" }}
-              >
-                <span className="inline-flex items-center gap-2 rounded-full bg-black/50 backdrop-blur-md border border-white/10 px-3 py-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  On set · 2026
-                </span>
-              </div>
-              <div
-                className="absolute top-5 right-5 text-[10px] font-mono-display uppercase tracking-[0.28em] text-[#D7E2EA]/70"
-                style={{ transform: "translateZ(30px)" }}
-              >
-                <span className="rounded-full bg-black/50 backdrop-blur-md border border-white/10 px-3 py-1.5">
-                  Roll · 001
-                </span>
-              </div>
+            </div>
+
+            {/* Live badges (with z-lift for 3D pop) */}
+            <div
+              className="absolute top-6 left-6 text-[10px] font-mono-display uppercase tracking-[0.28em] text-[#D7E2EA]/85"
+              style={{ transform: "translateZ(50px)" }}
+            >
+              <span className="inline-flex items-center gap-2 rounded-full bg-black/50 backdrop-blur-md border border-white/10 px-3 py-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                On set · 2026
+              </span>
+            </div>
+            <div
+              className="absolute top-6 right-6 text-[10px] font-mono-display uppercase tracking-[0.28em] text-[#D7E2EA]/70"
+              style={{ transform: "translateZ(50px)" }}
+            >
+              <span className="rounded-full bg-black/50 backdrop-blur-md border border-white/10 px-3 py-1.5">
+                Roll · 001
+              </span>
+            </div>
+            {/* Signature — bottom left */}
+            <div
+              className="absolute bottom-4 left-4 md:left-6 font-editorial-italic text-[#D7E2EA] text-lg md:text-xl"
+              style={{ transform: "translateZ(50px)" }}
+            >
+              — Tanmay
             </div>
           </motion.div>
 
-          {/* ---------- Floating 3D CAMERA (right of portrait, desktop) ---------- */}
+          {/* RIGHT — About snippet + 3D camera + stats */}
           <motion.div
-            initial={{ opacity: 0, x: 60, scale: 0.85 }}
-            animate={mounted ? { opacity: 1, x: 0, scale: 1 } : {}}
-            transition={{ duration: 1.2, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden lg:block absolute -right-2 xl:right-8 top-1/2 -translate-y-1/2 z-[7] animate-float-slow"
-          >
-            <Camera3D size={340} />
-          </motion.div>
-
-          {/* Mobile camera (smaller, above heading) */}
-          <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.85 }}
-            animate={mounted ? { opacity: 1, y: 0, scale: 1 } : {}}
-            transition={{ duration: 1.2, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:hidden absolute -top-6 -right-6 sm:-right-2 z-[7] animate-float-slow"
-          >
-            <Camera3D size={170} />
-          </motion.div>
-
-          {/* ---------- Floating heading ---------- */}
-          <motion.div
-            style={{ x: shX, y: shY }}
-            className={`absolute left-2 sm:left-6 md:left-10 lg:left-16 xl:left-24 bottom-[-3rem] md:bottom-[-2rem] lg:bottom-4 z-[6] max-w-[92%] md:max-w-[64%] ${
+            style={{ x: sRightX }}
+            className={`relative z-[6] order-3 lg:pl-4 flex flex-col items-stretch gap-5 md:gap-6 ${
               mounted ? "animate-fade-in-up" : "opacity-0"
             }`}
           >
-            <h1
-              className="hero-heading leading-[0.85]"
-              data-testid="hero-heading"
-              style={{ fontSize: "clamp(2.6rem, 9vw, 8.5rem)" }}
-            >
-              <span className="font-editorial-italic block" style={{ fontWeight: 300 }}>
-                creative
-              </span>
-              <span className="font-editorial block uppercase tracking-tight" style={{ fontWeight: 900 }}>
-                Direction
-              </span>
-              <span
-                className="font-editorial-italic block"
-                style={{
-                  fontWeight: 300,
-                  fontSize: "0.55em",
-                  marginTop: "0.15em",
-                  color: "#D7E2EA",
-                  WebkitTextFillColor: "#D7E2EA",
-                  background: "none",
-                }}
-              >
-                &amp; production
-              </span>
-            </h1>
-            <p
-              className="mt-5 md:mt-6 max-w-md text-[#D7E2EA]/85 font-light leading-relaxed"
-              style={{ fontSize: "clamp(0.95rem, 1.15vw, 1.1rem)" }}
-            >
-              I&apos;m <span className="font-editorial-italic text-[#D7E2EA]">Tanmay</span> — Video Editor & Content Creator. I&apos;ve stood on sets for Nykaa, Himalaya, and Lenovo. Now I build content systems for brands getting there.
-            </p>
-          </motion.div>
+            {/* Snippet */}
+            <div className="rounded-2xl border border-[#D7E2EA]/12 bg-[rgba(12,12,12,0.55)] backdrop-blur-md p-4 md:p-5 lg:ml-auto lg:max-w-[300px]">
+              <div className="flex items-center gap-2 text-[10px] font-mono-display uppercase tracking-[0.24em] text-[#D7E2EA]/60">
+                <Sparkles size={12} />
+                Studio · Delhi NCR
+              </div>
+              <p className="mt-3 text-[#D7E2EA] text-sm leading-relaxed">
+                I&apos;ve stood on sets for{" "}
+                <span className="font-editorial-italic text-white">Nykaa</span>,{" "}
+                <span className="font-editorial-italic text-white">Himalaya</span>{" "}
+                and <span className="font-editorial-italic text-white">Lenovo</span>. Now I build monthly content
+                systems for brands ready to grow.
+              </p>
+            </div>
 
-          {/* ---------- Floating info card (top-right) — appears above camera on md ---------- */}
-          <motion.div
-            style={{ x: scaX, y: scaY }}
-            initial={{ opacity: 0, x: 40 }}
-            animate={mounted ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.9, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden md:block lg:hidden absolute top-6 right-4 z-[6] max-w-[240px] backdrop-blur-md"
-          >
-            <InfoCard title="Creative Collective">
-              Strategy, shoot, edit and delivery — one system, one point of contact.
-            </InfoCard>
-          </motion.div>
+            {/* 3D Camera */}
+            <div className="relative w-full flex justify-center lg:justify-end lg:mr-2">
+              <div className="hidden sm:block">
+                <Camera3D size={230} />
+              </div>
+              <div className="sm:hidden">
+                <Camera3D size={180} />
+              </div>
+            </div>
 
-          {/* Mid-left card (desktop only, doesn't overlap camera) */}
-          <motion.div
-            style={{ x: scbX, y: scbY }}
-            initial={{ opacity: 0, x: -40 }}
-            animate={mounted ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.9, delay: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden lg:block absolute top-16 left-2 xl:left-4 z-[6] max-w-[240px] backdrop-blur-md"
-          >
-            <InfoCard title="2nd–3rd AD Credits" dot>
-              Nykaa · Himalaya · Lenovo × FIFA WC 2026 · AMD · Arpanvester
-            </InfoCard>
+            {/* Stats */}
+            <div className="flex gap-3 lg:ml-auto">
+              <StatCard number="05" label="Brand campaigns" delay={0.9} mounted={mounted} />
+              <StatCard number="2–3" label="Brands at a time" delay={1.0} mounted={mounted} />
+            </div>
           </motion.div>
-
-          {/* Stat card floating bottom-right (desktop) - repositioned near camera */}
-          <div className="hidden md:flex absolute right-4 md:right-6 lg:right-16 bottom-6 lg:bottom-14 z-[8] gap-3">
-            <StatCard number="05" label="Brand campaigns" delay={0.9} mounted={mounted} />
-            <StatCard number="2–3" label="Brands at a time" delay={1.0} mounted={mounted} />
-          </div>
         </div>
 
-        {/* ---------- Buttons below ---------- */}
+        {/* Bottom strip credential */}
         <div
-          className={`relative mt-24 md:mt-28 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8 ${
+          className={`relative mt-10 md:mt-12 pt-6 border-t border-[#D7E2EA]/10 flex items-center justify-between gap-4 flex-wrap ${
             mounted ? "animate-fade-in-up" : "opacity-0"
           }`}
           style={{ animationDelay: "0.9s" }}
         >
-          <div className="flex flex-wrap items-center gap-3 md:gap-4">
-            <MagneticButton
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="primary"
-              data-testid={TEST_IDS.heroCta}
-              onClick={() => trackEvent("whatsapp_click", { source: "hero" })}
-            >
-              Let&apos;s Talk <ArrowUpRight size={16} />
-            </MagneticButton>
-            <MagneticButton
-              as="a"
-              href="#work"
-              variant="outline"
-              data-testid={TEST_IDS.heroSecondaryCta}
-              onClick={() =>
-                trackEvent("cta_click", { source: "hero_see_work" })
-              }
-            >
-              See the Work <span aria-hidden>↓</span>
-            </MagneticButton>
-          </div>
-
           <div className="font-mono-display text-[10px] md:text-[11px] uppercase tracking-[0.28em] text-[#D7E2EA]/45">
-            2nd–3rd AD · Nykaa · Himalaya · Lenovo
+            2nd–3rd AD · Nykaa · Himalaya · Lenovo × FIFA WC 2026 · AMD · Arpanvester
           </div>
-
-          {/* Mobile-only stats */}
-          <div className="md:hidden flex gap-3 w-full">
-            <StatCard number="05" label="Brand campaigns" delay={0.95} mounted={mounted} compact />
-            <StatCard number="2–3" label="Brands at a time" delay={1.05} mounted={mounted} compact />
+          <div className="font-mono-display text-[10px] md:text-[11px] uppercase tracking-[0.28em] text-[#D7E2EA]/45">
+            Scroll ↓
           </div>
         </div>
       </div>
     </section>
-  );
-}
-
-function InfoCard({ title, dot = false, children }) {
-  return (
-    <div className="rounded-2xl border border-[#D7E2EA]/12 bg-[rgba(12,12,12,0.55)] p-4 lg:p-5">
-      <div className="flex items-center gap-2 text-[10px] font-mono-display uppercase tracking-[0.24em] text-[#D7E2EA]/60">
-        {dot ? (
-          <span className="w-1 h-1 rounded-full bg-[#B600A8]" />
-        ) : (
-          <Sparkles size={12} />
-        )}
-        {title}
-      </div>
-      <p className="mt-3 text-[#D7E2EA] text-sm leading-relaxed">{children}</p>
-    </div>
-  );
-}
-
-function FrameCorner({ position }) {
-  const map = {
-    "top-left": "top-4 left-4 border-t border-l",
-    "top-right": "top-4 right-4 border-t border-r",
-    "bottom-left": "bottom-4 left-4 border-b border-l",
-    "bottom-right": "bottom-4 right-4 border-b border-r",
-  };
-  return (
-    <div
-      aria-hidden
-      className={`absolute ${map[position]} w-6 h-6 border-[#D7E2EA]/30 rounded-[6px] pointer-events-none`}
-      style={{ transform: "translateZ(40px)" }}
-    />
   );
 }
 
@@ -385,19 +347,17 @@ function StatCard({ number, label, delay = 0, mounted, compact = false }) {
       animate={mounted ? { opacity: 1, y: 0, scale: 1 } : {}}
       transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ y: -4 }}
-      className={`rounded-2xl bg-white text-[#0C0C0C] shadow-[0_20px_50px_rgba(0,0,0,0.35)] ${
-        compact ? "px-4 py-3 flex-1" : "px-5 py-4 min-w-[128px]"
+      className={`rounded-2xl bg-white text-[#0C0C0C] shadow-[0_20px_50px_rgba(0,0,0,0.35)] flex-1 sm:flex-none ${
+        compact ? "px-4 py-3" : "px-4 py-3 min-w-[110px]"
       }`}
     >
       <div
-        className={`font-editorial leading-none tracking-tight ${
-          compact ? "text-3xl" : "text-4xl lg:text-5xl"
-        }`}
+        className="font-editorial leading-none tracking-tight text-3xl lg:text-4xl"
         style={{ fontWeight: 900 }}
       >
         {number}
       </div>
-      <div className="mt-1.5 text-[10px] font-mono-display uppercase tracking-[0.18em] text-[#0C0C0C]/60">
+      <div className="mt-1.5 text-[9px] font-mono-display uppercase tracking-[0.18em] text-[#0C0C0C]/60">
         {label}
       </div>
     </motion.div>

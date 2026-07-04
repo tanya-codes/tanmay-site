@@ -4,6 +4,7 @@ import "@/App.css";
 
 import ErrorBoundary from "@/components/portfolio/ErrorBoundary";
 import CursorGlow from "@/components/portfolio/CursorGlow";
+import IntroCurtain from "@/components/portfolio/IntroCurtain";
 import Navbar from "@/components/portfolio/Navbar";
 import Hero from "@/components/portfolio/Hero";
 import CredentialMarquee from "@/components/portfolio/CredentialMarquee";
@@ -24,6 +25,9 @@ function Portfolio() {
   return (
     <div className="relative">
       <ErrorBoundary>
+        <IntroCurtain />
+      </ErrorBoundary>
+      <ErrorBoundary>
         <CursorGlow />
       </ErrorBoundary>
       <ErrorBoundary>
@@ -40,10 +44,10 @@ function Portfolio() {
           <About />
         </ErrorBoundary>
         <ErrorBoundary>
-          <Services />
+          <Work />
         </ErrorBoundary>
         <ErrorBoundary>
-          <Work />
+          <Services />
         </ErrorBoundary>
         <ErrorBoundary>
           <Contact />
