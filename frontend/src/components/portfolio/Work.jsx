@@ -48,10 +48,10 @@ export default function Work() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-10%" }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="hero-heading font-black uppercase tracking-tight leading-none text-center"
+          className="hero-heading font-editorial tracking-tight leading-none text-center"
         >
           <span
-            style={{ fontSize: "clamp(3rem, 12vw, 9rem)", display: "block" }}
+            style={{ fontSize: "clamp(3rem, 12vw, 9rem)", display: "block", fontWeight: 900, fontStyle: "italic" }}
           >
             Work
           </span>
@@ -178,6 +178,37 @@ function MediaTile({ item, className, card }) {
     editing:
       "linear-gradient(135deg, #18011F 0%, #7621B0 40%, #BE4C00 100%)",
   };
+  const ref = React.useRef(null);
+  const [inView, setInView] = React.useState(false);
+
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el || !("IntersectionObserver" in window)) {
+      setInView(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setInView(true);
+            const v = el.querySelector("video");
+            if (v) {
+              v.load();
+              const p = v.play();
+              if (p && p.catch) p.catch(() => {});
+            }
+          } else {
+            const v = el.querySelector("video");
+            if (v) v.pause();
+          }
+        });
+      },
+      { threshold: 0.25, rootMargin: "100px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [item?.url]);
 
   if (!item) {
     return (
@@ -192,19 +223,12 @@ function MediaTile({ item, className, card }) {
 
   return (
     <div
+      ref={ref}
       className={`relative rounded-2xl md:rounded-3xl overflow-hidden group ${className}`}
       style={{ background: gradients[card.id] }}
     >
       {item.kind === "video" ? (
-        <video
-          src={item.url}
-          className="w-full h-full object-cover"
-          muted
-          loop
-          playsInline
-          autoPlay
-          poster=""
-        />
+        <VideoTile url={item.url} inView={inView} />
       ) : (
         <img
           src={item.url}
@@ -213,13 +237,61 @@ function MediaTile({ item, className, card }) {
           loading="lazy"
         />
       )}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
       {item.title && (
-        <div className="absolute bottom-3 left-4 text-xs text-white/90 uppercase tracking-[0.18em] opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute bottom-3 left-4 right-4 text-[10px] md:text-xs text-white/90 uppercase tracking-[0.22em] font-mono-display">
           {item.title}
         </div>
       )}
+      {item.kind === "video" && (
+        <div className="absolute top-3 right-3 text-[9px] uppercase tracking-[0.24em] text-white/70 font-mono-display bg-black/40 backdrop-blur-md border border-white/10 rounded-full px-2 py-1 inline-flex items-center gap-1.5">
+          <span className="w-1 h-1 rounded-full bg-red-500 animate-record-blink" />
+          Reel
+        </div>
+      )}
     </div>
+  );
+}
+
+function VideoTile({ url, inView }) {
+  const [errored, setErrored] = React.useState(false);
+  const vref = React.useRef(null);
+
+  React.useEffect(() => {
+    const v = vref.current;
+    if (!v) return;
+    if (inView && !errored) {
+      const p = v.play();
+      if (p && p.catch) p.catch(() => {});
+    } else if (v) {
+      v.pause();
+    }
+  }, [inView, errored]);
+
+  if (errored) {
+    return (
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.06) 100%)",
+        }}
+      />
+    );
+  }
+
+  return (
+    <video
+      ref={vref}
+      src={url}
+      className="w-full h-full object-cover"
+      muted
+      loop
+      playsInline
+      autoPlay
+      preload="metadata"
+      onError={() => setErrored(true)}
+    />
   );
 }
 

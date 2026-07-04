@@ -14,10 +14,10 @@ export default function Services() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-10%" }}
           transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="font-black uppercase tracking-tight leading-none text-center text-[#0C0C0C]"
+          className="font-editorial tracking-tight leading-none text-center text-[#0C0C0C]"
         >
           <span
-            style={{ fontSize: "clamp(3rem, 12vw, 9rem)", display: "block" }}
+            style={{ fontSize: "clamp(3rem, 12vw, 9rem)", display: "block", fontWeight: 900, fontStyle: "italic" }}
           >
             Services
           </span>

@@ -67,10 +67,10 @@ export default function Contact() {
       <div className="relative max-w-[1400px] mx-auto px-5 md:px-10">
         <motion.h2
           style={{ y: headingY }}
-          className="hero-heading font-black uppercase tracking-tight leading-none text-center"
+          className="hero-heading font-editorial tracking-tight leading-none text-center"
         >
           <span
-            style={{ fontSize: "clamp(3rem, 12vw, 9rem)", display: "block" }}
+            style={{ fontSize: "clamp(3rem, 12vw, 9rem)", display: "block", fontWeight: 900, fontStyle: "italic" }}
           >
             Let&apos;s Talk
           </span>

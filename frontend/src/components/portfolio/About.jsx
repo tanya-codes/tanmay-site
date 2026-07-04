@@ -37,10 +37,10 @@ export default function About() {
       <div className="max-w-[1400px] mx-auto px-5 md:px-10 text-center">
         <motion.h2
           style={{ y: headingY }}
-          className="hero-heading font-black uppercase tracking-tight leading-none"
+          className="hero-heading font-editorial tracking-tight leading-none"
         >
           <span
-            style={{ fontSize: "clamp(3rem, 12vw, 9rem)", display: "block" }}
+            style={{ fontSize: "clamp(3rem, 12vw, 9rem)", display: "block", fontWeight: 900, fontStyle: "italic" }}
           >
             About Me
           </span>
