@@ -20,6 +20,16 @@ import { trackEvent } from "@/lib/track";
 function Portfolio() {
   React.useEffect(() => {
     trackEvent("page_view", { path: "/" });
+    // Remove Emergent platform badge if present
+    const stripBadge = () => {
+      const el = document.getElementById("emergent-badge");
+      if (el) el.remove();
+    };
+    stripBadge();
+    // If script re-injects it, keep stripping for a short window
+    const iv = setInterval(stripBadge, 500);
+    setTimeout(() => clearInterval(iv), 5000);
+    return () => clearInterval(iv);
   }, []);
 
   return (
@@ -64,6 +74,16 @@ function Portfolio() {
 }
 
 function App() {
+  React.useEffect(() => {
+    const stripBadge = () => {
+      const el = document.getElementById("emergent-badge");
+      if (el) el.remove();
+    };
+    stripBadge();
+    const iv = setInterval(stripBadge, 500);
+    setTimeout(() => clearInterval(iv), 5000);
+    return () => clearInterval(iv);
+  }, []);
   return (
     <BrowserRouter>
       <Routes>

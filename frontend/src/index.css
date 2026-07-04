@@ -194,5 +194,8 @@ body {
   color: #ffffff;
 }
 
+/* Hide Emergent platform badge */
+#emergent-badge { display: none !important; }
+
 /* Smooth anchor scroll offset for sticky navbar */
 html { scroll-behavior: smooth; scroll-padding-top: 96px; }
