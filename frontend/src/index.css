@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Fonts ---------- */
+@font-face {
+  font-family: 'PP Neue Montreal';
+  src: url('https://assets.website-files.com/6009ec8cda7f305645c9d91b/60176f9bb43e36419997ecfe_PPNeueMontreal-Book.otf') format('opentype');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'PP Neue Montreal';
+  src: url('https://assets.website-files.com/6009ec8cda7f305645c9d91b/60176f9b39c5673e51a86f5a_PPNeueMontreal-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'PP Neue Montreal';
+  src: url('https://assets.website-files.com/6009ec8cda7f305645c9d91b/60176f9b39c5673e51a86f5a_PPNeueMontreal-Medium.otf') format('opentype');
+  font-weight: 700;
+  font-display: swap;
+}
+
+html, body, #root {
+  background: #0C0C0C;
+  color: #D7E2EA;
+}
+body {
+  margin: 0;
+  font-family: 'PP Neue Montreal', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+.font-serif-accent {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Design tokens (shadcn compatibility) ---------- */
+@layer base {
+  :root {
+    --background: 0 0% 5%;
+    --foreground: 200 20% 88%;
+    --card: 0 0% 7%;
+    --card-foreground: 200 20% 88%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 200 20% 88%;
+    --primary: 200 20% 88%;
+    --primary-foreground: 0 0% 5%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 200 20% 88%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 200 10% 55%;
+    --accent: 300 100% 36%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 200 10% 20%;
+    --input: 200 10% 20%;
+    --ring: 300 100% 36%;
+    --radius: 0.75rem;
+  }
+}
+@layer base {
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground; }
+}
+
+/* ---------- Utility classes ---------- */
+.hero-heading {
+  background: linear-gradient(180deg, #646973 0%, #BBCCD7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+.btn-gradient {
+  background: linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%);
+  box-shadow:
+    0 1px 2px 0 rgba(5, 26, 36, 0.10),
+    0 4px 4px 0 rgba(5, 26, 36, 0.09),
+    0 9px 6px 0 rgba(5, 26, 36, 0.05),
+    inset 0 2px 8px 0 rgba(255, 255, 255, 0.5);
+}
+.text-muted-navy { color: #273C46; }
+
+/* ---------- Keyframes ---------- */
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 30s linear infinite; }
+@media (max-width: 768px) {
+  .animate-marquee { animation-duration: 14s; }
+}
+
+@keyframes pulseSoft {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.02); }
+}
+.animate-pulse-soft { animation: pulseSoft 4s ease-in-out infinite; }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer-bg {
+  background: linear-gradient(90deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up { animation: none; opacity: 1; transform: none; }
+  .animate-marquee { animation: none; }
+  .animate-pulse-soft { animation: none; }
+  .shimmer-bg { animation: none; }
+  * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0C0C0C; }
+::-webkit-scrollbar-thumb { background: #1f1f1f; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: #2f2f2f; }
+
+/* Selection */
+::selection {
+  background: rgba(182, 0, 168, 0.35);
+  color: #ffffff;
+}
+
+/* Smooth anchor scroll offset for sticky navbar */
+html { scroll-behavior: smooth; scroll-padding-top: 96px; }
