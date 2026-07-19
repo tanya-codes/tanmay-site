@@ -151,15 +151,23 @@ export default function Hero() {
               mounted ? "animate-fade-in-up" : "opacity-0"
             }`}
           >
-            <div className="flex items-center gap-2 text-[10px] font-mono-display uppercase tracking-[0.28em] text-[#D7E2EA]/50 mb-4">
+            {/* Mobile backdrop for text readability */}
+            <div className="absolute inset-0 -inset-x-4 -inset-y-2 bg-gradient-to-r from-[#0C0C0C]/90 via-[#0C0C0C]/60 to-transparent rounded-2xl lg:hidden pointer-events-none" />
+            <div className="relative flex items-center gap-2 text-[10px] font-mono-display uppercase tracking-[0.28em] text-[#D7E2EA]/70 mb-4">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               I&apos;m Tanmay
             </div>
             <h1
-              className="hero-heading font-editorial leading-[0.9] tracking-tight"
+              className="relative hero-heading font-editorial leading-[0.9] tracking-tight"
               data-testid="hero-heading"
-              style={{ fontSize: "clamp(1.85rem, 4vw, 3.1rem)" }}
+              style={{ fontSize: "clamp(2rem, 4.5vw, 3.2rem)", textShadow: "0 2px 20px rgba(0,0,0,0.6)" }}
             >
+              <span className="font-editorial-italic block" style={{ fontWeight: 300 }}>
+                Social Media
+              </span>
+              <span className="block" style={{ fontWeight: 900 }}>
+                Marketer,
+              </span>
               <span className="font-editorial-italic block" style={{ fontWeight: 300 }}>
                 Creative
               </span>
@@ -167,10 +175,7 @@ export default function Hero() {
                 Director,
               </span>
               <span className="font-editorial-italic block" style={{ fontWeight: 300 }}>
-                Video Editor
-              </span>
-              <span className="block" style={{ fontWeight: 900 }}>
-                &amp; Creator.
+                &amp; Video Editor.
               </span>
             </h1>
 
@@ -236,7 +241,7 @@ export default function Hero() {
               }}
             >
               <img
-                src="/tanmay-portrait.jpg"
+                src="/tanmay-portrait.png"
                 alt="Tanmay — portrait"
                 className="w-full h-full object-cover"
                 draggable="false"
@@ -289,17 +294,19 @@ export default function Hero() {
             }`}
           >
             {/* Snippet */}
-            <div className="rounded-2xl border border-[#D7E2EA]/12 bg-[rgba(12,12,12,0.55)] backdrop-blur-md p-4 md:p-5 lg:ml-auto lg:max-w-[300px]">
+            <div className="rounded-2xl border border-[#D7E2EA]/15 bg-[rgba(12,12,12,0.75)] backdrop-blur-xl p-4 md:p-5 lg:ml-auto lg:max-w-[300px] shadow-lg shadow-black/30">
               <div className="flex items-center gap-2 text-[10px] font-mono-display uppercase tracking-[0.24em] text-[#D7E2EA]/60">
                 <Sparkles size={12} />
                 Studio · Delhi NCR
               </div>
               <p className="mt-3 text-[#D7E2EA] text-sm leading-relaxed">
-                I&apos;ve stood on sets for{" "}
+                I&apos;ve worked on AD Campaigns for{" "}
                 <span className="font-editorial-italic text-white">Nykaa</span>,{" "}
-                <span className="font-editorial-italic text-white">Himalaya</span>{" "}
-                and <span className="font-editorial-italic text-white">Lenovo</span>. Now I build monthly content
-                systems for brands ready to grow.
+                <span className="font-editorial-italic text-white">Himalaya</span>,{" "}
+                <span className="font-editorial-italic text-white">Aparnavenster</span>,{" "}
+                <span className="font-editorial-italic text-white">Lenovo</span>{" "}
+                and many other well known brands. Now I build content
+                systems for the brands getting there.
               </p>
             </div>
 

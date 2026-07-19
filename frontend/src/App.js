@@ -66,9 +66,6 @@ function Portfolio() {
       <ErrorBoundary>
         <Footer />
       </ErrorBoundary>
-      <ErrorBoundary>
-        <BottomNav />
-      </ErrorBoundary>
     </div>
   );
 }

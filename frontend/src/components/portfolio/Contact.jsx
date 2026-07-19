@@ -142,7 +142,7 @@ export default function Contact() {
               icon={<Instagram size={16} />}
               href="https://instagram.com/tanmayvisuals.in"
               label="Instagram"
-              value="@tanmayvisuals.in"
+              value="instagram.com/tanmayvisuals.in"
             />
             <InfoRow
               icon={<Mail size={16} />}
@@ -154,12 +154,12 @@ export default function Contact() {
               icon={<Phone size={16} />}
               href="tel:+919266553033"
               label="Phone"
-              value="+91 92665 53033"
+              value="9266553033"
             />
             <InfoRow
               icon={<MapPin size={16} />}
               label="Based in"
-              value="Delhi NCR · India"
+              value="Delhi NCR. Working with brands across India."
             />
           </div>
         </FadeIn>

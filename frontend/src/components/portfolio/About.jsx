@@ -6,11 +6,20 @@ import FadeIn from "./FadeIn";
 import { WHATSAPP_URL, TEST_IDS } from "../../constants";
 import { trackEvent } from "../../lib/track";
 
-const ABOUT_TEXT =
-  "My background is in professional ad production. I've worked as a 2nd–3rd Assistant Director on shoots for Nykaa, Himalaya, AMD and Lenovo — which means I understand what brand content looks like when it's made with real creative intention, not just a phone and some trending audio. Now I build monthly content systems that bring that same intentionality to brands ready to grow.";
+const ABOUT_INTRO =
+  "I\u2019m Tanmay \u2014 social media marketer, creative director and video editor based in Delhi NCR.";
+
+const ABOUT_BODY =
+  "My background is in professional ad production. I\u2019ve worked as a 2nd\u20133rd Assistant Director on shoots for Nykaa, Himalaya, AMD and Lenovo, which means I understand what brand content looks like when it\u2019s made with real creative intention \u2014 not just a phone and some trending audio.";
+
+const ABOUT_CTA_LINE =
+  "Now I work directly with brands to build monthly content systems that bring that same intentionality to Digital Platforms.";
 
 const ABOUT_EXPANDED =
-  "Before working with brands independently, I spent time on professional ad sets as an Assistant Director — productions for Nykaa, Himalaya, Lenovo's FIFA World Cup 2026 campaign, AMD and Arpanvester. Those shoots taught me something most content creators never learn: what brand storytelling looks like when it's built with serious intent. I work with 2–3 brands at a time. Strategy first. Shoot second. Everything else follows.";
+  "Before working with brands independently, I spent time on professional ad sets as an Assistant Director \u2014 productions for Nykaa, Himalaya, Lenovo\u2019s FIFA World Cup 2026 campaign, AMD and Arpanvester. Those shoots taught me something most content creators never learn: what brand storytelling looks like when it\u2019s built with serious intent.";
+
+const ABOUT_TAGLINE =
+  "I work with 2\u20133 brands at a time. Strategy first. Shoot second. Everything else follows.";
 
 export default function About() {
   const sectionRef = useRef(null);
@@ -48,8 +57,18 @@ export default function About() {
 
         <div className="mt-10 md:mt-14 max-w-3xl mx-auto">
           <FadeIn delay={0.1}>
-            <p className="text-[#D7E2EA] text-lg md:text-2xl leading-relaxed md:leading-[1.55] tracking-tight text-left md:text-center">
-              {ABOUT_TEXT}
+            <p className="text-[#D7E2EA] text-lg md:text-2xl leading-relaxed md:leading-[1.55] tracking-tight text-left md:text-center font-editorial-italic">
+              {ABOUT_INTRO}
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.2}>
+            <p className="mt-6 text-[#D7E2EA]/85 text-base md:text-lg leading-relaxed md:leading-[1.65] text-left md:text-center">
+              {ABOUT_BODY}
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.3}>
+            <p className="mt-6 text-[#D7E2EA] text-base md:text-lg leading-relaxed md:leading-[1.65] text-left md:text-center font-semibold">
+              {ABOUT_CTA_LINE}
             </p>
           </FadeIn>
         </div>
@@ -64,8 +83,11 @@ export default function About() {
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               className="overflow-hidden"
             >
-              <p className="mt-8 max-w-3xl mx-auto text-[#D7E2EA]/80 text-base md:text-lg leading-relaxed">
+              <p className="mt-8 max-w-3xl mx-auto text-[#D7E2EA]/80 text-base md:text-lg leading-relaxed md:leading-[1.65] text-left md:text-center">
                 {ABOUT_EXPANDED}
+              </p>
+              <p className="mt-6 max-w-3xl mx-auto text-[#D7E2EA] text-base md:text-lg leading-relaxed font-semibold font-editorial-italic text-left md:text-center">
+                {ABOUT_TAGLINE}
               </p>
             </motion.div>
           )}
@@ -85,16 +107,6 @@ export default function About() {
               }`}
             />
           </button>
-          <MagneticButton
-            href={WHATSAPP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="primary"
-            data-testid={TEST_IDS.aboutLetsTalk}
-            onClick={() => trackEvent("whatsapp_click", { source: "about" })}
-          >
-            Let&apos;s Talk <span aria-hidden>→</span>
-          </MagneticButton>
         </FadeIn>
       </div>
     </section>

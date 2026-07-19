@@ -1,3 +1,18 @@
+# Large media files (hosted separately, not in git)
+frontend/public/videos/
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+# Backup images
+*-bak.png
+
+# Previous hosting service
+.emergent/
+.gitconfig
+test_reports/
+
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # IDE and editors
@@ -86,3 +101,28 @@ android-sdk/
 credentials.json
 *.key
 .credentials
+frontend/public/videos/stranger_things_edit.mp4
+frontend/public/videos/Editing
+Content/Copy
+of
+DIY.mp4
+Berole.mp4
+frontend/public/videos/Other
+Projects/av
+BTS.MP4
+Projects/ST
+Title
+Seq.mp4
+frontend/public/videos/real_estate_edit_2.mp4
+frontend/public/videos/Real
+Estate
+Work/Real
+Reel
+3.mp4
+frontend/public/videos/Production
+Content/Himalaya
+BTS/hm
+3.MOV
+1.MOV
+Content/Aparnavenster
+BTS/av
