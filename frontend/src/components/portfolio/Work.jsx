@@ -17,9 +17,25 @@ function getKnowMore(cardId, title) {
 }
 
 /* ========== Main Work Section ========== */
+/* Hardcoded fallback so the portfolio works without the backend */
+const FALLBACK_ITEMS = [
+  { card_id: "campaign", title: "Himalaya Work", url: "/videos/himalaya_work.mp4", kind: "video" },
+  { card_id: "campaign", title: "AMD Work", url: "/videos/amd_work.mp4", kind: "video" },
+  { card_id: "campaign", title: "Lenovo Work", url: "/videos/lenovo_work.mp4", kind: "video" },
+  { card_id: "campaign", title: "Arpanvester Work", url: "/videos/arpanvester_work.mp4", kind: "video" },
+  { card_id: "growth", title: "Bakery Edit", url: "/videos/bakery_edit.mp4", kind: "video" },
+  { card_id: "growth", title: "Real Estate Edit 1", url: "/videos/real_estate_edit_1.mp4", kind: "video" },
+  { card_id: "growth", title: "Real Estate Edit 2", url: "/videos/real_estate_edit_2.mp4", kind: "video" },
+  { card_id: "growth", title: "Viral Edit", url: "/videos/viral_edit.mp4", kind: "video" },
+  { card_id: "editing", title: "Spotify Edit", url: "/videos/spotify_edit.mp4", kind: "video" },
+  { card_id: "editing", title: "Spiderman Edit", url: "/videos/spiderman_edit.mp4", kind: "video" },
+  { card_id: "editing", title: "Party Edit", url: "/videos/party_edit.mp4", kind: "video" },
+  { card_id: "editing", title: "Stranger Things Edit", url: "/videos/stranger_things_edit.mp4", kind: "video" },
+];
+
 export default function Work() {
   const containerRef = useRef(null);
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(FALLBACK_ITEMS);
   const [viewVideo, setViewVideo] = useState(null); // { item, cardId, clipName }
 
   useEffect(() => {
@@ -27,9 +43,11 @@ export default function Work() {
     axios
       .get(`${API}/work-items`)
       .then((res) => {
-        if (mounted) setItems(res.data || []);
+        if (mounted && res.data && res.data.length > 0) setItems(res.data);
       })
-      .catch(() => {});
+      .catch(() => {
+        // Fallback data is already set as initial state
+      });
     return () => {
       mounted = false;
     };
