@@ -1,0 +1,7 @@
+node_modules
+videos_original
+.git
+*.log
+.DS_Store
+__pycache__
+*.pyc

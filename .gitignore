@@ -138,3 +138,7 @@ frontend/build/videos_original/Other
 frontend/build/videos_original/real_estate_edit_2.mp4
 frontend/build/videos_original/Real
 frontend/build/videos_original/Production
+frontend/public/videos_original/
+compress_videos.sh
+frontend/public/videos_original/
+compress_videos.sh
