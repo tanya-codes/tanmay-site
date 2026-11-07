@@ -198,21 +198,24 @@ function MediaGrid({ items, card, onTileClick }) {
   const clipNames = card.clipNames || [];
   const list =
     items && items.length > 0
-      ? items.slice(0, 4)
+      ? items
       : [null, null, null, null];
 
   return (
     <div className="relative grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 p-1 md:p-2">
-      {list.map((item, i) => (
-        <MediaTile
-          key={i}
-          item={item}
-          card={card}
-          clipName={clipNames[i] || `Clip ${i + 1}`}
-          onTileClick={() => item && onTileClick(item, card.id, clipNames[i] || item.title)}
-          className="aspect-[3/4]"
-        />
-      ))}
+      {list.map((item, i) => {
+        const displayTitle = item?.title || clipNames[i] || `Clip ${i + 1}`;
+        return (
+          <MediaTile
+            key={item?.id || i}
+            item={item}
+            card={card}
+            clipName={displayTitle}
+            onTileClick={() => item && onTileClick(item, card.id, displayTitle)}
+            className="aspect-[3/4]"
+          />
+        );
+      })}
     </div>
   );
 }
@@ -229,7 +232,7 @@ function MediaTile({ item, className, card, clipName, onTileClick }) {
   };
   const ref = React.useRef(null);
   const [inView, setInView] = React.useState(false);
-  const hasKnowMore = item && getKnowMore(card.id, item.title);
+  const hasKnowMore = item && (item.description || item.brand || getKnowMore(card.id, item.title));
 
   React.useEffect(() => {
     const el = ref.current;
@@ -368,7 +371,14 @@ function VideoTile({ url, inView }) {
 
 /* ========== Split-Panel Fullscreen Video Viewer ========== */
 function VideoViewer({ item, cardId, clipName, onClose }) {
-  const brand = getKnowMore(cardId, item.title);
+  const brand = (item?.description || item?.brand)
+    ? {
+        brand: item.brand || item.title,
+        description: item.description || "",
+        link: item.link || null,
+        linkText: item.link_text || (item.link ? "Watch final output" : null),
+      }
+    : getKnowMore(cardId, item?.title);
   const [infoPanelOpen, setInfoPanelOpen] = useState(true);
 
   useEffect(() => {
