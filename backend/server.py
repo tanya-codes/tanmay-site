@@ -2,7 +2,6 @@ from fastapi import FastAPI, APIRouter, HTTPException, Header, Request, Body
 from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import json
 import asyncio
@@ -13,7 +12,16 @@ from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
 
-import resend
+# Optional imports — gracefully handle if not installed
+try:
+    from motor.motor_asyncio import AsyncIOMotorClient
+except ImportError:
+    AsyncIOMotorClient = None
+
+try:
+    import resend
+except ImportError:
+    resend = None
 
 ROOT_DIR = Path(__file__).parent
 DATA_DIR = ROOT_DIR / "data"
@@ -28,12 +36,13 @@ db_name = os.environ.get('DB_NAME', 'tanmay_portfolio')
 
 client = None
 db = None
-try:
-    client = AsyncIOMotorClient(mongo_url, serverSelectionTimeoutMS=2000)
-    db = client[db_name]
-except Exception as e:
-    client = None
-    db = None
+if AsyncIOMotorClient is not None:
+    try:
+        client = AsyncIOMotorClient(mongo_url, serverSelectionTimeoutMS=2000)
+        db = client[db_name]
+    except Exception as e:
+        client = None
+        db = None
 
 # Resend config
 RESEND_API_KEY = os.environ.get('RESEND_API_KEY', '')
@@ -43,7 +52,7 @@ ADMIN_KEY = os.environ.get('ADMIN_KEY', 'tanmay-admin-2026')
 CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME', '')
 CLOUDINARY_UPLOAD_PRESET = os.environ.get('CLOUDINARY_UPLOAD_PRESET', '')
 
-if RESEND_API_KEY:
+if RESEND_API_KEY and resend is not None:
     resend.api_key = RESEND_API_KEY
 
 app = FastAPI(title="Tanmay Visuals API")
@@ -572,8 +581,6 @@ async def analytics_summary(x_admin_key: Optional[str] = Header(default=None)):
 
 
 # ---------- App wiring ----------
-app.include_router(api_router)
-
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
@@ -581,6 +588,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(api_router)
 
 
 @app.on_event("shutdown")
