@@ -35,24 +35,27 @@ const CATEGORIES = [
   { id: "editing",  name: "Video Editing", number: "03" },
 ];
 
+const PORTFOLIO_URL = "https://tanmayportfolio2.vercel.app";
+
 const DEFAULT_ITEMS = [
-  { id: "d1", card_id: "campaign", title: "Himalaya Work",         url: "/videos/himalaya_work.mp4",         brand: "Himalaya",     position: 1,  description: "Worked as the 3rd Assistant Director across the entire production pipeline." },
-  { id: "d2", card_id: "campaign", title: "AMD Work",              url: "/videos/amd_work.mp4",              brand: "AMD",          position: 2,  description: "Served as 3rd Chief on set, managing production flow.", link: "https://www.instagram.com/p/DT7kpsrDili/" },
-  { id: "d3", card_id: "campaign", title: "Lenovo Work",           url: "/videos/lenovo_work.mp4",           brand: "Lenovo × FIFA", position: 3, description: "Led end-to-end video editing for Lenovo's FIFA World Cup 2026 campaign." },
-  { id: "d4", card_id: "campaign", title: "Arpanvester Work",      url: "/videos/arpanvester_work.mp4",      brand: "Arpanvester",  position: 4,  description: "Served as Assistant Director on set.", link: "https://www.instagram.com/p/DG-8x8Wv-zL/" },
-  { id: "d5", card_id: "growth",   title: "Bakery Edit",           url: "/videos/bakery_edit.mp4",           brand: "Bakery & Cafe", position: 5, description: "Sensory, fast-paced food cinematography edit." },
-  { id: "d6", card_id: "growth",   title: "Real Estate Edit 1",    url: "/videos/real_estate_edit_1.mp4",    brand: "Luxury Real Estate", position: 6, description: "Architectural showcase video." },
-  { id: "d7", card_id: "growth",   title: "Real Estate Edit 2",    url: "/videos/real_estate_edit_2.mp4",    brand: "Modern Estates", position: 7, description: "Cinematic property tour." },
-  { id: "d8", card_id: "growth",   title: "Viral Edit",            url: "/videos/viral_edit.mp4",            brand: "Viral Content", position: 8, description: "High-retention social edit." },
-  { id: "d9", card_id: "editing",  title: "Spotify Edit",          url: "/videos/spotify_edit.mp4",          brand: "Spotify",      position: 9,  description: "Vibrant music-sync edit." },
-  { id: "d10",card_id: "editing",  title: "Spiderman Edit",        url: "/videos/spiderman_edit.mp4",        brand: "Cinematic Cut", position: 10, description: "Action pacing edit." },
-  { id: "d11",card_id: "editing",  title: "Party Edit",            url: "/videos/party_edit.mp4",            brand: "Events",       position: 11, description: "High-energy event recap." },
-  { id: "d12",card_id: "editing",  title: "Stranger Things Edit",  url: "/videos/stranger_things_edit.mp4",  brand: "Retro Edit",   position: 12, description: "Moody, 80s-synthwave homage edit." },
+  { id: "d1", card_id: "campaign", title: "Himalaya Work",         url: `${PORTFOLIO_URL}/videos/himalaya_work.mp4`,         brand: "Himalaya",     position: 1,  description: "Worked as the 3rd Assistant Director across the entire production pipeline." },
+  { id: "d2", card_id: "campaign", title: "AMD Work",              url: `${PORTFOLIO_URL}/videos/amd_work.mp4`,              brand: "AMD",          position: 2,  description: "Served as 3rd Chief on set, managing production flow.", link: "https://www.instagram.com/p/DT7kpsrDili/" },
+  { id: "d3", card_id: "campaign", title: "Lenovo Work",           url: `${PORTFOLIO_URL}/videos/lenovo_work.mp4`,           brand: "Lenovo × FIFA", position: 3, description: "Led end-to-end video editing for Lenovo's FIFA World Cup 2026 campaign." },
+  { id: "d4", card_id: "campaign", title: "Arpanvester Work",      url: `${PORTFOLIO_URL}/videos/arpanvester_work.mp4`,      brand: "Arpanvester",  position: 4,  description: "Served as Assistant Director on set.", link: "https://www.instagram.com/p/DG-8x8Wv-zL/" },
+  { id: "d5", card_id: "growth",   title: "Bakery Edit",           url: `${PORTFOLIO_URL}/videos/bakery_edit.mp4`,           brand: "Bakery & Cafe", position: 5, description: "Sensory, fast-paced food cinematography edit." },
+  { id: "d6", card_id: "growth",   title: "Real Estate Edit 1",    url: `${PORTFOLIO_URL}/videos/real_estate_edit_1.mp4`,    brand: "Luxury Real Estate", position: 6, description: "Architectural showcase video." },
+  { id: "d7", card_id: "growth",   title: "Real Estate Edit 2",    url: `${PORTFOLIO_URL}/videos/real_estate_edit_2.mp4`,    brand: "Modern Estates", position: 7, description: "Cinematic property tour." },
+  { id: "d8", card_id: "growth",   title: "Viral Edit",            url: `${PORTFOLIO_URL}/videos/viral_edit.mp4`,            brand: "Viral Content", position: 8, description: "High-retention social edit." },
+  { id: "d9", card_id: "editing",  title: "Spotify Edit",          url: `${PORTFOLIO_URL}/videos/spotify_edit.mp4`,          brand: "Spotify",      position: 9,  description: "Vibrant music-sync edit." },
+  { id: "d10",card_id: "editing",  title: "Spiderman Edit",        url: `${PORTFOLIO_URL}/videos/spiderman_edit.mp4`,        brand: "Cinematic Cut", position: 10, description: "Action pacing edit." },
+  { id: "d11",card_id: "editing",  title: "Party Edit",            url: `${PORTFOLIO_URL}/videos/party_edit.mp4`,            brand: "Events",       position: 11, description: "High-energy event recap." },
+  { id: "d12",card_id: "editing",  title: "Stranger Things Edit",  url: `${PORTFOLIO_URL}/videos/stranger_things_edit.mp4`,  brand: "Retro Edit",   position: 12, description: "Moody, 80s-synthwave homage edit." },
 ];
 
 // ── Helpers ──
-const load  = () => { try { const s = localStorage.getItem("tv_items"); return s ? JSON.parse(s) : DEFAULT_ITEMS; } catch { return DEFAULT_ITEMS; } };
-const save  = (items) => { try { localStorage.setItem("tv_items", JSON.stringify(items)); } catch {} };
+const DATA_VERSION = "v2"; // bump to force localStorage refresh when defaults change
+const load  = () => { try { if (localStorage.getItem("tv_version") !== DATA_VERSION) { localStorage.removeItem("tv_items"); localStorage.setItem("tv_version", DATA_VERSION); return DEFAULT_ITEMS; } const s = localStorage.getItem("tv_items"); return s ? JSON.parse(s) : DEFAULT_ITEMS; } catch { return DEFAULT_ITEMS; } };
+const save  = (items) => { try { localStorage.setItem("tv_items", JSON.stringify(items)); localStorage.setItem("tv_version", DATA_VERSION); } catch {} };
 const toast = (set, msg, type = "ok") => { set({ msg, type }); setTimeout(() => set(null), 4000); };
 
 // ══════════════════════════════════════════════
