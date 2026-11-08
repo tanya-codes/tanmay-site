@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const BACKEND_BASE = (process.env.REACT_APP_BACKEND_URL || "http://localhost:8000").replace(/\/+$/, "");
-const API = `${BACKEND_BASE}/api`;
+// API is co-located on the same Vercel project as a serverless function
+const API = "/api";
 
 export async function trackEvent(event, meta) {
   try {

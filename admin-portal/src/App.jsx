@@ -26,7 +26,7 @@ import {
 const ADMIN_KEY = "tanmay-admin-2026";
 const CLOUD_NAME = "bsnz76af";
 const UPLOAD_PRESET = "tanmay_portfolio"; // Tanmay creates this once in Cloudinary
-const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || "https://tanmay-site-backend.onrender.com/api").replace(/\/+$/, "");
+const BACKEND_URL = (import.meta.env.VITE_BACKEND_URL || "https://tanmayportfolio2.vercel.app/api").replace(/\/+$/, "");
 const SITE_URL = import.meta.env.VITE_SITE_URL || "https://tanmayportfolio2.vercel.app";
 
 const CATEGORIES = [
