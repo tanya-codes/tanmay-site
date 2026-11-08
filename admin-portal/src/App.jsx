@@ -37,23 +37,37 @@ const CATEGORIES = [
 
 const PORTFOLIO_URL = "https://tanmayportfolio2.vercel.app";
 
+const getVideoPoster = (item) => {
+  if (!item) return null;
+  if (item.thumbnail_url) return item.thumbnail_url;
+  if (!item.url) return null;
+  if (item.url.includes("cloudinary.com")) {
+    return item.url.replace(/\.(mp4|mov|webm|mkv)$/i, ".jpg");
+  }
+  const match = item.url.match(/\/videos\/([^/?#]+)\.mp4/i);
+  if (match) {
+    return `${PORTFOLIO_URL}/videos/posters/${match[1]}.jpg`;
+  }
+  return null;
+};
+
 const DEFAULT_ITEMS = [
-  { id: "item-himalaya", card_id: "campaign", title: "Himalaya Work", url: `${PORTFOLIO_URL}/videos/himalaya_work.mp4`, brand: "Himalaya", position: 1, description: "Worked as the 3rd Assistant Director, contributing across the entire production pipeline—from early-stage concept discussions and pre-production planning to on-ground shoot execution and post-production coordination." },
-  { id: "item-amd", card_id: "campaign", title: "AMD Work", url: `${PORTFOLIO_URL}/videos/amd_work.mp4`, brand: "AMD", position: 2, description: "Served as the 3rd Chief on set, playing a key role in managing production flow and assisting in both creative and logistical aspects.", link: "https://www.instagram.com/p/DT7kpsrDili/" },
-  { id: "item-lenovo", card_id: "campaign", title: "Lenovo Work", url: `${PORTFOLIO_URL}/videos/lenovo_work.mp4`, brand: "Lenovo × FIFA World Cup 2026", position: 3, description: "Led end-to-end video editing and visual assembly for Lenovo's partnership campaign with the FIFA World Cup 2026." },
-  { id: "item-arpanvester", card_id: "campaign", title: "Arpanvester Work", url: `${PORTFOLIO_URL}/videos/arpanvester_work.mp4`, brand: "Arpanvester", position: 4, description: "Served as Assistant Director on set for Arpanvester's commercial shoot.", link: "https://www.instagram.com/p/DG-8x8Wv-zL/" },
-  { id: "item-bakery", card_id: "growth", title: "Bakery Edit", url: `${PORTFOLIO_URL}/videos/bakery_edit.mp4`, brand: "Bakery & Cafe", position: 5, description: "Crafted sensory, fast-paced food cinematography edit for an artisanal bakery." },
-  { id: "item-real-estate-1", card_id: "growth", title: "Real Estate Edit 1", url: `${PORTFOLIO_URL}/videos/real_estate_edit_1.mp4`, brand: "Luxury Real Estate", position: 6, description: "Architectural showcase video edit emphasizing expansive spatial flow and high-end interior textures." },
-  { id: "item-real-estate-2", card_id: "growth", title: "Real Estate Edit 2", url: `${PORTFOLIO_URL}/videos/real_estate_edit_2.mp4`, brand: "Modern Estates", position: 7, description: "Cinematic property tour featuring clean typography overlays and ambient drone transitions." },
-  { id: "item-viral", card_id: "growth", title: "Viral Edit", url: `${PORTFOLIO_URL}/videos/viral_edit.mp4`, brand: "Viral Social Content", position: 8, description: "High-retention social edit engineered around a 1.5-second visual hook and fast typography kinetic motion." },
-  { id: "item-spotify", card_id: "editing", title: "Spotify Edit", url: `${PORTFOLIO_URL}/videos/spotify_edit.mp4`, brand: "Spotify Aesthetic", position: 9, description: "Vibrant music-sync edit combining custom speed-ramping, kinetic motion graphics, and atmospheric chromatic grading." },
-  { id: "item-spiderman", card_id: "editing", title: "Spiderman Edit", url: `${PORTFOLIO_URL}/videos/spiderman_edit.mp4`, brand: "Cinematic Cut", position: 10, description: "Action pacing edit with dynamic whip pans, match cuts, and aggressive bass drops." },
-  { id: "item-party", card_id: "editing", title: "Party Edit", url: `${PORTFOLIO_URL}/videos/party_edit.mp4`, brand: "Nightlife & Events", position: 11, description: "High-energy event recap featuring strobe transitions, neon color pop, and rhythmic audio sync." },
-  { id: "item-stranger-things", card_id: "editing", title: "Stranger Things Edit", url: `${PORTFOLIO_URL}/videos/stranger_things_edit.mp4`, brand: "Retro Sci-Fi Edit", position: 12, description: "Moody, 80s-synthwave homage edit utilizing synth basslines, CRT glitch textures, and suspenseful pacing." },
+  { id: "item-himalaya", card_id: "campaign", title: "Himalaya Work", url: `${PORTFOLIO_URL}/videos/himalaya_work.mp4`, thumbnail_url: `${PORTFOLIO_URL}/videos/posters/himalaya_work.jpg`, brand: "Himalaya", position: 1, description: "Worked as the 3rd Assistant Director, contributing across the entire production pipeline—from early-stage concept discussions and pre-production planning to on-ground shoot execution and post-production coordination." },
+  { id: "item-amd", card_id: "campaign", title: "AMD Work", url: `${PORTFOLIO_URL}/videos/amd_work.mp4`, thumbnail_url: `${PORTFOLIO_URL}/videos/posters/amd_work.jpg`, brand: "AMD", position: 2, description: "Served as the 3rd Chief on set, playing a key role in managing production flow and assisting in both creative and logistical aspects.", link: "https://www.instagram.com/p/DT7kpsrDili/" },
+  { id: "item-lenovo", card_id: "campaign", title: "Lenovo Work", url: `${PORTFOLIO_URL}/videos/lenovo_work.mp4`, thumbnail_url: `${PORTFOLIO_URL}/videos/posters/lenovo_work.jpg`, brand: "Lenovo × FIFA World Cup 2026", position: 3, description: "Led end-to-end video editing and visual assembly for Lenovo's partnership campaign with the FIFA World Cup 2026." },
+  { id: "item-arpanvester", card_id: "campaign", title: "Arpanvester Work", url: `${PORTFOLIO_URL}/videos/arpanvester_work.mp4`, thumbnail_url: `${PORTFOLIO_URL}/videos/posters/arpanvester_work.jpg`, brand: "Arpanvester", position: 4, description: "Served as Assistant Director on set for Arpanvester's commercial shoot.", link: "https://www.instagram.com/p/DG-8x8Wv-zL/" },
+  { id: "item-bakery", card_id: "growth", title: "Bakery Edit", url: `${PORTFOLIO_URL}/videos/bakery_edit.mp4`, thumbnail_url: `${PORTFOLIO_URL}/videos/posters/bakery_edit.jpg`, brand: "Bakery & Cafe", position: 5, description: "Crafted sensory, fast-paced food cinematography edit for an artisanal bakery." },
+  { id: "item-real-estate-1", card_id: "growth", title: "Real Estate Edit 1", url: `${PORTFOLIO_URL}/videos/real_estate_edit_1.mp4`, thumbnail_url: `${PORTFOLIO_URL}/videos/posters/real_estate_edit_1.jpg`, brand: "Luxury Real Estate", position: 6, description: "Architectural showcase video edit emphasizing expansive spatial flow and high-end interior textures." },
+  { id: "item-real-estate-2", card_id: "growth", title: "Real Estate Edit 2", url: `${PORTFOLIO_URL}/videos/real_estate_edit_2.mp4`, thumbnail_url: `${PORTFOLIO_URL}/videos/posters/real_estate_edit_2.jpg`, brand: "Modern Estates", position: 7, description: "Cinematic property tour featuring clean typography overlays and ambient drone transitions." },
+  { id: "item-viral", card_id: "growth", title: "Viral Edit", url: `${PORTFOLIO_URL}/videos/viral_edit.mp4`, thumbnail_url: `${PORTFOLIO_URL}/videos/posters/viral_edit.jpg`, brand: "Viral Social Content", position: 8, description: "High-retention social edit engineered around a 1.5-second visual hook and fast typography kinetic motion." },
+  { id: "item-spotify", card_id: "editing", title: "Spotify Edit", url: `${PORTFOLIO_URL}/videos/spotify_edit.mp4`, thumbnail_url: `${PORTFOLIO_URL}/videos/posters/spotify_edit.jpg`, brand: "Spotify Aesthetic", position: 9, description: "Vibrant music-sync edit combining custom speed-ramping, kinetic motion graphics, and atmospheric chromatic grading." },
+  { id: "item-spiderman", card_id: "editing", title: "Spiderman Edit", url: `${PORTFOLIO_URL}/videos/spiderman_edit.mp4`, thumbnail_url: `${PORTFOLIO_URL}/videos/posters/spiderman_edit.jpg`, brand: "Cinematic Cut", position: 10, description: "Action pacing edit with dynamic whip pans, match cuts, and aggressive bass drops." },
+  { id: "item-party", card_id: "editing", title: "Party Edit", url: `${PORTFOLIO_URL}/videos/party_edit.mp4`, thumbnail_url: `${PORTFOLIO_URL}/videos/posters/party_edit.jpg`, brand: "Nightlife & Events", position: 11, description: "High-energy event recap featuring strobe transitions, neon color pop, and rhythmic audio sync." },
+  { id: "item-stranger-things", card_id: "editing", title: "Stranger Things Edit", url: `${PORTFOLIO_URL}/videos/stranger_things_edit.mp4`, thumbnail_url: `${PORTFOLIO_URL}/videos/posters/stranger_things_edit.jpg`, brand: "Retro Sci-Fi Edit", position: 12, description: "Moody, 80s-synthwave homage edit utilizing synth basslines, CRT glitch textures, and suspenseful pacing." },
 ];
 
 // ── Helpers ──
-const DATA_VERSION = "v3"; // bump to force localStorage refresh when defaults change
+const DATA_VERSION = "v4"; // bump to force localStorage refresh when defaults change
 const load  = () => { try { if (localStorage.getItem("tv_version") !== DATA_VERSION) { localStorage.removeItem("tv_items"); localStorage.setItem("tv_version", DATA_VERSION); return DEFAULT_ITEMS; } const s = localStorage.getItem("tv_items"); return s ? JSON.parse(s) : DEFAULT_ITEMS; } catch { return DEFAULT_ITEMS; } };
 const save  = (items) => { try { localStorage.setItem("tv_items", JSON.stringify(items)); localStorage.setItem("tv_version", DATA_VERSION); } catch {} };
 const toast = (set, msg, type = "ok") => { set({ msg, type }); setTimeout(() => set(null), 4000); };
@@ -222,19 +236,35 @@ export default function App() {
                 <div key={item.id} className="group bg-[#0E0E12] border border-white/[0.08] hover:border-white/20 rounded-2xl overflow-hidden flex flex-col transition-all">
                   {/* Thumbnail */}
                   <div className="relative aspect-[9/12] bg-[#141419] overflow-hidden">
-                    <video src={item.url} className="w-full h-full object-cover" muted loop playsInline preload="metadata"
+                    {getVideoPoster(item) && (
+                      <img
+                        src={getVideoPoster(item)}
+                        alt={item.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    )}
+                    <video
+                      src={item.url}
+                      poster={getVideoPoster(item) || undefined}
+                      className="relative z-10 w-full h-full object-cover"
+                      muted
+                      loop
+                      playsInline
+                      preload="none"
                       onMouseEnter={e => { const p = e.target.play(); p?.catch?.(() => {}); }}
-                      onMouseLeave={e => e.target.pause()} />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
+                      onMouseLeave={e => e.target.pause()}
+                    />
+                    <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
                     {/* Tags */}
-                    <span className="absolute top-2 left-2 text-[10px] font-mono bg-black/60 backdrop-blur px-2 py-0.5 rounded-full border border-white/10 text-white/80">{cat?.number}</span>
-                    <span className="absolute top-2 right-2 text-[10px] font-mono bg-[#B600A8]/80 text-white px-2 py-0.5 rounded-full">#{item.position || idx+1}</span>
+                    <span className="absolute top-2 left-2 z-20 text-[10px] font-mono bg-black/60 backdrop-blur px-2 py-0.5 rounded-full border border-white/10 text-white/80">{cat?.number}</span>
+                    <span className="absolute top-2 right-2 z-20 text-[10px] font-mono bg-[#B600A8]/80 text-white px-2 py-0.5 rounded-full">#{item.position || idx+1}</span>
                     {/* Play overlay */}
-                    <button onClick={() => setPreview(item)} className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
+                    <button onClick={() => setPreview(item)} className="absolute inset-0 z-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
                       <div className="w-11 h-11 rounded-full bg-white/20 backdrop-blur border border-white/30 flex items-center justify-center text-white"><Play size={18} fill="currentColor" /></div>
                     </button>
                     {/* Bottom info */}
-                    <div className="absolute bottom-2 inset-x-2.5">
+                    <div className="absolute bottom-2 inset-x-2.5 z-20">
                       <p className="text-[10px] uppercase font-mono tracking-wider text-[#D946EF]">{item.brand || cat?.name}</p>
                       <h4 className="text-sm font-bold text-white truncate">{item.title}</h4>
                     </div>

@@ -16,21 +16,41 @@ function getKnowMore(cardId, title) {
   return null;
 }
 
+/* Helper to get instant video cover / poster */
+export function getVideoPoster(item) {
+  if (!item) return null;
+  if (item.thumbnail_url) return item.thumbnail_url;
+  if (!item.url) return null;
+
+  // Cloudinary video thumbnail trick (replace extension with .jpg)
+  if (item.url.includes("cloudinary.com")) {
+    return item.url.replace(/\.(mp4|mov|webm|mkv)$/i, ".jpg");
+  }
+
+  // Local or Vercel video /videos/filename.mp4 -> /videos/posters/filename.jpg
+  const match = item.url.match(/\/videos\/([^/?#]+)\.mp4/i);
+  if (match) {
+    return `/videos/posters/${match[1]}.jpg`;
+  }
+
+  return null;
+}
+
 /* ========== Main Work Section ========== */
 /* Hardcoded fallback so the portfolio works without the backend */
 const FALLBACK_ITEMS = [
-  { card_id: "campaign", title: "Himalaya Work", url: "/videos/himalaya_work.mp4", kind: "video" },
-  { card_id: "campaign", title: "AMD Work", url: "/videos/amd_work.mp4", kind: "video" },
-  { card_id: "campaign", title: "Lenovo Work", url: "/videos/lenovo_work.mp4", kind: "video" },
-  { card_id: "campaign", title: "Arpanvester Work", url: "/videos/arpanvester_work.mp4", kind: "video" },
-  { card_id: "growth", title: "Bakery Edit", url: "/videos/bakery_edit.mp4", kind: "video" },
-  { card_id: "growth", title: "Real Estate Edit 1", url: "/videos/real_estate_edit_1.mp4", kind: "video" },
-  { card_id: "growth", title: "Real Estate Edit 2", url: "/videos/real_estate_edit_2.mp4", kind: "video" },
-  { card_id: "growth", title: "Viral Edit", url: "/videos/viral_edit.mp4", kind: "video" },
-  { card_id: "editing", title: "Spotify Edit", url: "/videos/spotify_edit.mp4", kind: "video" },
-  { card_id: "editing", title: "Spiderman Edit", url: "/videos/spiderman_edit.mp4", kind: "video" },
-  { card_id: "editing", title: "Party Edit", url: "/videos/party_edit.mp4", kind: "video" },
-  { card_id: "editing", title: "Stranger Things Edit", url: "/videos/stranger_things_edit.mp4", kind: "video" },
+  { card_id: "campaign", title: "Himalaya Work", url: "/videos/himalaya_work.mp4", thumbnail_url: "/videos/posters/himalaya_work.jpg", kind: "video" },
+  { card_id: "campaign", title: "AMD Work", url: "/videos/amd_work.mp4", thumbnail_url: "/videos/posters/amd_work.jpg", kind: "video" },
+  { card_id: "campaign", title: "Lenovo Work", url: "/videos/lenovo_work.mp4", thumbnail_url: "/videos/posters/lenovo_work.jpg", kind: "video" },
+  { card_id: "campaign", title: "Arpanvester Work", url: "/videos/arpanvester_work.mp4", thumbnail_url: "/videos/posters/arpanvester_work.jpg", kind: "video" },
+  { card_id: "growth", title: "Bakery Edit", url: "/videos/bakery_edit.mp4", thumbnail_url: "/videos/posters/bakery_edit.jpg", kind: "video" },
+  { card_id: "growth", title: "Real Estate Edit 1", url: "/videos/real_estate_edit_1.mp4", thumbnail_url: "/videos/posters/real_estate_edit_1.jpg", kind: "video" },
+  { card_id: "growth", title: "Real Estate Edit 2", url: "/videos/real_estate_edit_2.mp4", thumbnail_url: "/videos/posters/real_estate_edit_2.jpg", kind: "video" },
+  { card_id: "growth", title: "Viral Edit", url: "/videos/viral_edit.mp4", thumbnail_url: "/videos/posters/viral_edit.jpg", kind: "video" },
+  { card_id: "editing", title: "Spotify Edit", url: "/videos/spotify_edit.mp4", thumbnail_url: "/videos/posters/spotify_edit.jpg", kind: "video" },
+  { card_id: "editing", title: "Spiderman Edit", url: "/videos/spiderman_edit.mp4", thumbnail_url: "/videos/posters/spiderman_edit.jpg", kind: "video" },
+  { card_id: "editing", title: "Party Edit", url: "/videos/party_edit.mp4", thumbnail_url: "/videos/posters/party_edit.jpg", kind: "video" },
+  { card_id: "editing", title: "Stranger Things Edit", url: "/videos/stranger_things_edit.mp4", thumbnail_url: "/videos/posters/stranger_things_edit.jpg", kind: "video" },
 ];
 
 export default function Work() {
@@ -284,7 +304,12 @@ function MediaTile({ item, className, card, clipName, onTileClick }) {
       data-testid={`work-tile-${card.id}-${clipName.replace(/\s/g, "_")}`}
     >
       {item.kind === "video" ? (
-        <VideoTile url={item.url} inView={inView} />
+        <VideoTile
+          url={item.url}
+          poster={getVideoPoster(item)}
+          inView={inView}
+          clipName={clipName}
+        />
       ) : (
         <img
           src={item.url}
@@ -327,7 +352,8 @@ function MediaTile({ item, className, card, clipName, onTileClick }) {
 }
 
 /* ========== Video Tile (autoplay in grid) ========== */
-function VideoTile({ url, inView }) {
+function VideoTile({ url, poster, inView, clipName }) {
+  const [isPlaying, setIsPlaying] = React.useState(false);
   const [errored, setErrored] = React.useState(false);
   const vref = React.useRef(null);
 
@@ -337,35 +363,44 @@ function VideoTile({ url, inView }) {
     if (inView && !errored) {
       const p = v.play();
       if (p && p.catch) p.catch(() => {});
-    } else if (v) {
+    } else {
       v.pause();
     }
   }, [inView, errored]);
 
-  if (errored) {
-    return (
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.06) 100%)",
-        }}
-      />
-    );
-  }
-
   return (
-    <video
-      ref={vref}
-      src={url}
-      className="w-full h-full object-cover"
-      muted
-      loop
-      playsInline
-      autoPlay
-      preload="metadata"
-      onError={() => setErrored(true)}
-    />
+    <div className="relative w-full h-full overflow-hidden bg-[#0A0A0C]">
+      {/* Instant crisp poster image cover */}
+      {poster && (
+        <img
+          src={poster}
+          alt={clipName || ""}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+            isPlaying ? "opacity-0 pointer-events-none" : "opacity-100"
+          }`}
+          loading="eager"
+        />
+      )}
+
+      {/* Video element */}
+      {!errored && (
+        <video
+          ref={vref}
+          src={url}
+          poster={poster || undefined}
+          className={`w-full h-full object-cover transition-opacity duration-300 ${
+            isPlaying ? "opacity-100" : (poster ? "opacity-0" : "opacity-100")
+          }`}
+          muted
+          loop
+          playsInline
+          preload={inView ? "metadata" : "none"}
+          onPlaying={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onError={() => setErrored(true)}
+        />
+      )}
+    </div>
   );
 }
 
@@ -589,6 +624,7 @@ function VideoViewer({ item, cardId, clipName, onClose }) {
             {item.kind === "video" ? (
               <video
                 src={item.url}
+                poster={getVideoPoster(item) || undefined}
                 className="max-w-full max-h-full object-contain rounded-2xl md:rounded-3xl"
                 style={{
                   boxShadow:
